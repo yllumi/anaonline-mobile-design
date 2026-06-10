@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anaonline — Kabar</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --green-dark:  #1b5e2e;
+      --green-mid:   #2d7a3e;
+      --green-light: #eaf6ed;
+      --green-pale:  #d4edda;
+      --yellow:      #f5c842;
+      --yellow-dark: #6b4c00;
+      --text-main:   #1a1a1a;
+      --text-sub:    #6b7280;
+      --border:      #e4e7e2;
+      --bg:          #f4f7f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--green-dark);
+      padding: 1.25rem 1.25rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .glow { position: absolute; border-radius: 50%; filter: blur(44px); pointer-events: none; }
+    .glow-1 { width: 180px; height: 180px; background: rgba(120,210,100,.28); top: -60px; right: -40px; }
+    .glow-2 { width: 120px; height: 120px; background: rgba(245,200,66,.2);  top: 10px;  right: 60px; }
+    .glow-3 { width: 100px; height: 100px; background: rgba(60,180,110,.18); bottom: -20px; left: 10px; }
+
+    .header-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .back-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.14); border: none;
+      color: #fff; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; cursor: pointer;
+    }
+    .page-title {
+      font-size: 1.1rem; font-weight: 700; color: #fff;
+      flex: 1; text-align: center; margin-right: 34px; /* balance back btn */
+    }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      padding: .85rem 1rem .6rem;
+      background: var(--bg);
+    }
+    .search-input {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: .6rem .9rem .6rem 2.5rem;
+      font-family: inherit;
+      font-size: .84rem;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color .18s;
+    }
+    .search-input:focus { border-color: var(--green-mid); }
+    .search-icon {
+      position: absolute; left: 1.85rem; top: 50%; transform: translateY(-50%);
+      color: var(--text-sub); font-size: 1rem; pointer-events: none;
+    }
+
+    /* ── Category chips ── */
+    .chip-row {
+      display: flex; gap: .5rem;
+      padding: 0 1rem .9rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .chip-row::-webkit-scrollbar { display: none; }
+    .chip {
+      white-space: nowrap;
+      padding: .35rem .85rem;
+      border-radius: 20px;
+      font-size: .73rem; font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: #fff; color: var(--text-sub);
+      cursor: pointer; transition: all .18s;
+      flex-shrink: 0;
+    }
+    .chip.active {
+      background: var(--green-mid); color: #fff; border-color: var(--green-mid);
+    }
+    .chip:not(.active):hover { border-color: var(--green-mid); color: var(--green-mid); }
+
+    /* ── News cards ── */
+    .content-area {
+      padding: 0 1rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .news-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      border: .5px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
+      cursor: pointer;
+      transition: box-shadow .18s, transform .18s;
+    }
+    .news-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,.1);
+      transform: translateY(-1px);
+    }
+
+    /* Thumb */
+    .news-thumb {
+      height: 170px;
+      background: var(--green-dark);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .news-thumb .tg1 {
+      position: absolute; width: 150px; height: 150px;
+      border-radius: 50%; background: rgba(100,200,110,.25);
+      filter: blur(35px); top: -30px; right: 10px;
+    }
+    .news-thumb .tg2 {
+      position: absolute; width: 100px; height: 100px;
+      border-radius: 50%; background: rgba(245,200,66,.2);
+      filter: blur(25px); bottom: -10px; left: 20px;
+    }
+    .thumb-icon {
+      color: rgba(255,255,255,.25); font-size: 3rem;
+      position: relative; z-index: 1;
+    }
+
+    /* Caption overlay */
+    .thumb-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 100%);
+      padding: 1.5rem .9rem .7rem;
+      font-size: .72rem; font-style: italic;
+      color: rgba(255,255,255,.88);
+      line-height: 1.45;
+      z-index: 2;
+    }
+
+    /* Category tag */
+    .news-tag {
+      position: absolute; top: 10px; left: 10px; z-index: 3;
+      background: var(--yellow); color: var(--yellow-dark);
+      font-size: .62rem; font-weight: 700;
+      padding: 2px 9px; border-radius: 20px;
+      letter-spacing: .4px; text-transform: uppercase;
+    }
+
+    /* Card body */
+    .news-body { padding: .85rem 1rem 1rem; }
+
+    .author-row {
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: .45rem;
+    }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green-light);
+      color: var(--green-mid);
+      font-size: .7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      border: 1.5px solid var(--green-pale);
+    }
+    .author-name { font-size: .78rem; font-weight: 600; color: var(--text-main); }
+
+    .news-date {
+      font-size: .7rem; color: var(--text-sub); margin-bottom: .4rem;
+    }
+    .news-title {
+      font-size: .95rem; font-weight: 700;
+      line-height: 1.45; margin-bottom: .45rem; color: var(--text-main);
+    }
+    .news-excerpt {
+      font-size: .8rem; color: var(--text-sub);
+      line-height: 1.55; margin: 0;
+    }
+    .news-excerpt .read-more {
+      color: var(--green-mid); font-weight: 600; text-decoration: none;
+    }
+    .news-excerpt .read-more:hover { text-decoration: underline; }
+
+    /* Bottom meta bar */
+    .news-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .55rem 1rem .7rem;
+      border-top: 1px solid var(--border);
+      margin-top: .5rem;
+    }
+    .news-stat {
+      display: flex; align-items: center; gap: .3rem;
+      font-size: .7rem; color: var(--text-sub);
+    }
+    .news-stat i { font-size: .85rem; }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: .55rem 0 .75rem;
+      z-index: 100;
+      box-shadow: 0 -2px 16px rgba(0,0,0,.06);
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      text-decoration: none; color: var(--text-sub);
+      font-size: .65rem;
+    }
+    .nav-item i { font-size: 1.35rem; }
+    .nav-item.active { color: var(--green-mid); }
+    .nav-item.active::after {
+      content: ''; display: block;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--green-mid); margin-top: 1px;
+    }
+
+    /* desktop frame */
+    @media (min-width: 480px) {
+      body { background: #e8ede6; }
+      .app-shell {
+        margin: 2rem auto; border-radius: 36px; overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,.18); min-height: 820px;
+      }
+      .bottom-nav { border-radius: 0 0 36px 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── HEADER ── -->
+  <header class="app-header">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+    <div class="header-inner">
+      <button class="back-btn" aria-label="Kembali"><i class="ti ti-arrow-left"></i></button>
+      <h1 class="page-title mb-0">Kabar Pemuda</h1>
+    </div>
+  </header>
+
+  <!-- ── SEARCH ── -->
+  <div class="search-wrap">
+    <div style="position:relative;">
+      <i class="ti ti-search search-icon"></i>
+      <input class="search-input" type="search" placeholder="Cari kabar & pengumuman…" />
+    </div>
+  </div>
+
+  <!-- ── CATEGORY CHIPS ── -->
+  <div class="chip-row">
+    <button class="chip active" onclick="filterChip(this,'semua')">Semua</button>
+    <button class="chip" onclick="filterChip(this,'kegiatan')">Kegiatan</button>
+    <button class="chip" onclick="filterChip(this,'pengumuman')">Pengumuman</button>
+    <button class="chip" onclick="filterChip(this,'kajian')">Kajian</button>
+    <button class="chip" onclick="filterChip(this,'organisasi')">Organisasi</button>
+  </div>
+
+  <!-- ── NEWS LIST ── -->
+  <main class="content-area" id="news-list"></main>
+
+</div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="/" class="nav-item">
+      <i class="ti ti-home"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="/kabar.html" class="nav-item active" aria-current="page">
+      <i class="ti ti-news"></i>
+      <span>Kabar</span>
+    </a>
+    <a href="/iuran.html" class="nav-item">
+      <i class="ti ti-wallet"></i>
+      <span>Iuran</span>
+    </a>
+    <a href="/akun.html" class="nav-item">
+      <i class="ti ti-user-circle"></i>
+      <span>Akun</span>
+    </a>
+  </nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const articles = [
+    {
+      id: 1,
+      kategori: 'kegiatan',
+      tag: 'Kegiatan',
+      caption: 'Dakwah Berkelanjutan Pemuda Persatuan Islam: "Sustainable Leaders, Sustainable Futures"',
+      author: 'Toni Haryanto', authorInitial: 'TH',
+      date: '19 Januari 2025',
+      title: 'TITN Ke-14 Pemuda Persis 2024: Mewujudkan Kepemimpinan dan Dakwah Berkelanjutan melalui Kompetisi Nasional',
+      excerpt: 'PUSDAPI MEDIA, Kab. Bandung – Pimpinan Pusat Pemuda Persatuan Islam (PERSIS) Jawa Barat menggelar soft launching program dakwah nasional yang melibatkan ratusan kader muda dari seluruh wilayah.',
+      views: 214, comments: 18,
+    },
+    {
+      id: 2,
+      kategori: 'pengumuman',
+      tag: 'Pengumuman',
+      caption: 'Musyawarah tahunan membahas program kerja dan konsolidasi organisasi tingkat kota.',
+      author: 'Toni Haryanto', authorInitial: 'TH',
+      date: '15 Januari 2025',
+      title: 'Musyawarah Cabang Pemuda Persis Kota Bandung Tahun 2025',
+      excerpt: 'Pemuda Persis Kota Bandung menggelar musyawarah tahunan untuk membahas program kerja dan memperkuat konsolidasi organisasi di tingkat kota.',
+      views: 97, comments: 7,
+    },
+    {
+      id: 3,
+      kategori: 'kajian',
+      tag: 'Kajian',
+      caption: 'Kajian fiqih kontemporer bersama ustadz dari Pimpinan Pusat Persatuan Islam.',
+      author: 'Toni Haryanto', authorInitial: 'TH',
+      date: '10 Januari 2025',
+      title: 'Kajian Fiqih Kontemporer: Menjawab Tantangan Zaman di Era Digital',
+      excerpt: 'Pimpinan Pusat Pemuda Persis mengadakan kajian intensif selama dua hari membahas permasalahan fiqih yang relevan dengan kehidupan pemuda masa kini.',
+      views: 143, comments: 24,
+    },
+    {
+      id: 4,
+      kategori: 'organisasi',
+      tag: 'Organisasi',
+      caption: 'Pelantikan pengurus baru Pemuda Persis Kabupaten Bandung Barat periode 2025–2028.',
+      author: 'Toni Haryanto', authorInitial: 'TH',
+      date: '5 Januari 2025',
+      title: 'Pelantikan Pengurus Pemuda Persis Kabupaten Bandung Barat Periode 2025–2028',
+      excerpt: 'Acara pelantikan dihadiri oleh Pimpinan Pusat dan lebih dari 200 kader dari seluruh kecamatan se-Kabupaten Bandung Barat.',
+      views: 178, comments: 12,
+    },
+  ];
+
+  let activeFilter = 'semua';
+
+  function filterChip(el, cat) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    activeFilter = cat;
+    render();
+  }
+
+  function render() {
+    const list = activeFilter === 'semua'
+      ? articles
+      : articles.filter(a => a.kategori === activeFilter);
+
+    const html = list.map(a => `
+      <article class="news-card" onclick="openArticle(${a.id})">
+        <div class="news-thumb">
+          <div class="tg1"></div>
+          <div class="tg2"></div>
+          <span class="news-tag">${a.tag}</span>
+          <i class="ti ti-photo thumb-icon"></i>
+          <div class="thumb-caption">${a.caption}</div>
+        </div>
+        <div class="news-body">
+          <div class="author-row">
+            <div class="avatar">${a.authorInitial}</div>
+            <span class="author-name">${a.author}</span>
+          </div>
+          <p class="news-date">${a.date}</p>
+          <h2 class="news-title">${a.title}</h2>
+          <p class="news-excerpt">
+            ${a.excerpt.slice(0, 120)}…
+            <a href="#" class="read-more" onclick="event.stopPropagation();">Selengkapnya</a>
+          </p>
+        </div>
+        <div class="news-footer">
+          <div class="d-flex gap-3">
+            <span class="news-stat">
+              <i class="ti ti-eye"></i> ${a.views}
+            </span>
+            <span class="news-stat">
+              <i class="ti ti-message-circle"></i> ${a.comments}
+            </span>
+          </div>
+          <span class="news-stat" style="color:var(--green-mid);font-weight:600;font-size:.72rem;">
+            Baca selengkapnya <i class="ti ti-arrow-right" style="font-size:.8rem;"></i>
+          </span>
+        </div>
+      </article>
+    `).join('');
+
+    document.getElementById('news-list').innerHTML = html ||
+      `<div style="text-align:center;padding:3rem 1rem;color:var(--text-sub);">
+        <i class="ti ti-inbox" style="font-size:2.5rem;display:block;margin-bottom:.5rem;"></i>
+        Belum ada kabar di kategori ini.
+      </div>`;
+  }
+
+  function openArticle(id) {
+    const a = articles.find(x => x.id === id);
+    alert(`Membuka artikel:\n"${a.title}"`);
+  }
+
+  render();
+</script>
+</body>
+</html>

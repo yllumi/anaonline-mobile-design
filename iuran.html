@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anaonline — Iuran</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --green-dark:  #1b5e2e;
+      --green-mid:   #2d7a3e;
+      --green-light: #eaf6ed;
+      --green-pale:  #d4edda;
+      --yellow:      #f5c842;
+      --yellow-dark: #6b4c00;
+      --text-main:   #1a1a1a;
+      --text-sub:    #6b7280;
+      --border:      #e4e7e2;
+      --bg:          #f4f7f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--green-dark);
+      padding: 1.5rem 1.25rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .glow { position: absolute; border-radius: 50%; filter: blur(44px); pointer-events: none; }
+    .glow-1 { width: 180px; height: 180px; background: rgba(120,210,100,.28); top: -60px; right: -40px; }
+    .glow-2 { width: 120px; height: 120px; background: rgba(245,200,66,.2);  top: 10px;  right: 60px; }
+    .glow-3 { width: 100px; height: 100px; background: rgba(60,180,110,.18); bottom: -20px; left: 10px; }
+
+    .page-title {
+      font-size: .75rem; color: #9dd4a8; letter-spacing: .3px; margin-bottom: 2px;
+    }
+    .back-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,.14); border: none;
+      color: #fff; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Profile card inside header */
+    .profile-card {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 14px;
+      padding: .85rem 1rem;
+      display: flex; align-items: center; gap: .85rem;
+      position: relative; z-index: 1;
+      margin-top: .9rem;
+    }
+    .avatar-wrap {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(255,255,255,.15);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.8); font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .profile-name  { font-size: .95rem; font-weight: 600; color: #fff; line-height: 1.2; }
+    .profile-nreg  { font-size: .7rem;  color: #9dd4a8; margin-bottom: .3rem; }
+    .profile-label { font-size: .68rem; color: #9dd4a8; }
+    .profile-total { font-size: 1.15rem; font-weight: 700; color: var(--yellow); line-height: 1; }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex; gap: .5rem;
+      padding: .9rem 1rem;
+      background: var(--bg);
+    }
+    .tab-btn {
+      flex: 1; padding: .55rem;
+      border-radius: 10px;
+      font-size: .82rem; font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: #fff; color: var(--text-sub);
+      cursor: pointer; transition: all .18s;
+    }
+    .tab-btn.active {
+      background: var(--green-mid); color: #fff;
+      border-color: var(--green-mid);
+    }
+    .tab-btn:not(.active):hover {
+      border-color: var(--green-mid); color: var(--green-mid);
+    }
+
+    /* ── Content area ── */
+    .content-area {
+      padding: 0 1rem 1rem;
+      display: flex; flex-direction: column; gap: .55rem;
+    }
+
+    /* ── Iuran item ── */
+    .iuran-item {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: .8rem 1rem;
+      display: flex; align-items: center; gap: .85rem;
+      cursor: pointer; transition: all .18s;
+      user-select: none;
+    }
+    .iuran-item:hover { border-color: var(--green-mid); }
+    .iuran-item.checked {
+      background: var(--green-light);
+      border-color: var(--green-mid);
+    }
+
+    /* custom checkbox */
+    .cb-wrap {
+      width: 26px; height: 26px; border-radius: 7px;
+      border: 2px solid var(--border);
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .18s;
+      color: #fff; font-size: .9rem;
+    }
+    .iuran-item.checked .cb-wrap {
+      background: var(--green-mid); border-color: var(--green-mid);
+    }
+
+    .iuran-name {
+      font-size: .85rem; font-weight: 600;
+      color: var(--text-main); line-height: 1.2; margin-bottom: 2px;
+    }
+    .iuran-item.checked .iuran-name { color: var(--green-mid); }
+    .iuran-nominal { font-size: .78rem; color: var(--text-sub); }
+
+    /* ── Sticky footer total ── */
+    .pay-footer {
+      position: fixed; bottom: 64px; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: .75rem 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 90;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.07);
+    }
+    .pay-footer .total-lbl { font-size: .72rem; color: var(--text-sub); }
+    .pay-footer .total-val { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+    .btn-bayar {
+      background: var(--green-mid); color: #fff;
+      border: none; border-radius: 10px;
+      padding: .55rem 1.5rem;
+      font-size: .88rem; font-weight: 600;
+      font-family: inherit;
+      cursor: pointer; transition: background .18s;
+    }
+    .btn-bayar:hover { background: var(--green-dark); }
+    .btn-bayar:disabled {
+      background: var(--border); color: var(--text-sub); cursor: not-allowed;
+    }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: .55rem 0 .75rem;
+      z-index: 100;
+      box-shadow: 0 -2px 16px rgba(0,0,0,.06);
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      text-decoration: none; color: var(--text-sub);
+      font-size: .65rem;
+    }
+    .nav-item i { font-size: 1.35rem; }
+    .nav-item.active { color: var(--green-mid); }
+    .nav-item.active::after {
+      content: ''; display: block;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--green-mid); margin-top: 1px;
+    }
+
+    /* desktop frame */
+    @media (min-width: 480px) {
+      body { background: #e8ede6; }
+      .app-shell { margin: 2rem auto; border-radius: 36px; overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,.18); min-height: 820px; }
+      .bottom-nav, .pay-footer { border-radius: 0; }
+      .bottom-nav { border-radius: 0 0 36px 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── HEADER ── -->
+  <header class="app-header">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+
+    <div class="d-flex align-items-center gap-2 mb-1" style="position:relative;z-index:1;">
+      <!-- <button class="back-btn" aria-label="Kembali">
+        <i class="ti ti-arrow-left"></i>
+      </button> -->
+      <div>
+        <h1 class="mb-0" style="font-size:1.1rem;font-weight:700;color:#fff;line-height:1;">Iuran Anggota</h1>
+      </div>
+    </div>
+
+    <!-- Profile summary -->
+    <div class="profile-card">
+      <div class="avatar-wrap">
+        <i class="ti ti-heart-handshake"></i>
+      </div>
+      <div class="flex-grow-1">
+        <p class="profile-name mb-0">Toni Haryanto</p>
+        <p class="profile-nreg mb-1">NPA: 17.5383</p>
+        <p class="profile-label mb-0">Total Kontribusi</p>
+        <p class="profile-total mb-0">Rp 680.000</p>
+      </div>
+      <div style="text-align:right;">
+        <span style="background:rgba(255,255,255,.12);color:#9dd4a8;font-size:.65rem;font-weight:600;
+          padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.15);">
+          Aktif
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── TAB ── -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-belum" onclick="switchTab('belum')">
+      <i class="ti ti-clock me-1" style="font-size:.85rem;"></i>Belum Lunas
+    </button>
+    <button class="tab-btn" id="tab-lunas" onclick="switchTab('lunas')">
+      <i class="ti ti-circle-check me-1" style="font-size:.85rem;"></i>Sudah Lunas
+    </button>
+  </div>
+
+  <!-- ── IURAN LIST ── -->
+  <main class="content-area" id="iuran-list">
+    <!-- rendered by JS -->
+  </main>
+
+</div><!-- /app-shell -->
+
+<!-- ── PAY FOOTER ── -->
+<div class="pay-footer" id="pay-footer">
+  <div>
+    <p class="total-lbl mb-0">Total tagihan</p>
+    <p class="total-val mb-0" id="total-val">Rp 0</p>
+  </div>
+  <button class="btn-bayar" id="btn-bayar" disabled onclick="handleBayar()">Bayar</button>
+</div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="/" class="nav-item">
+      <i class="ti ti-home"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="/kabar.html" class="nav-item">
+      <i class="ti ti-news"></i>
+      <span>Kabar</span>
+    </a>
+    <a href="/iuran.html" class="nav-item active" aria-current="page">
+      <i class="ti ti-wallet"></i>
+      <span>Iuran</span>
+    </a>
+    <a href="/akun.html" class="nav-item">
+      <i class="ti ti-user-circle"></i>
+      <span>Akun</span>
+    </a>
+  </nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const NOMINAL = 20000;
+
+  const iuranBelum = [
+    { id: 1, nama: 'Iuran Juni 2026',      nominal: NOMINAL, checked: true  },
+    { id: 2, nama: 'Iuran Juli 2026',      nominal: NOMINAL, checked: false },
+    { id: 3, nama: 'Iuran Agustus 2026',   nominal: NOMINAL, checked: false },
+    { id: 4, nama: 'Iuran September 2026', nominal: NOMINAL, checked: false },
+    { id: 5, nama: 'Iuran Oktober 2026',   nominal: NOMINAL, checked: false },
+    { id: 6, nama: 'Iuran November 2026',  nominal: NOMINAL, checked: false },
+    { id: 7, nama: 'Iuran Desember 2026',  nominal: NOMINAL, checked: false },
+  ];
+
+  const iuranLunas = [
+    { id: 8,  nama: 'Iuran Januari 2026',  nominal: NOMINAL },
+    { id: 9,  nama: 'Iuran Februari 2026', nominal: NOMINAL },
+    { id: 10, nama: 'Iuran Maret 2026',    nominal: NOMINAL },
+    { id: 11, nama: 'Iuran April 2026',    nominal: NOMINAL },
+    { id: 12, nama: 'Iuran Mei 2026',      nominal: NOMINAL },
+  ];
+
+  let currentTab = 'belum';
+
+  function fmt(n) {
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  function renderBelum() {
+    const list = document.getElementById('iuran-list');
+    list.innerHTML = iuranBelum.map(item => `
+      <div class="iuran-item ${item.checked ? 'checked' : ''}"
+           id="item-${item.id}" onclick="toggle(${item.id})">
+        <div class="cb-wrap">
+          ${item.checked ? '<i class="ti ti-check"></i>' : ''}
+        </div>
+        <div class="flex-grow-1">
+          <p class="iuran-name mb-0">${item.nama}</p>
+          <p class="iuran-nominal mb-0">${fmt(item.nominal)}</p>
+        </div>
+        <span style="font-size:.75rem;color:var(--text-sub);">
+          <i class="ti ti-chevron-right"></i>
+        </span>
+      </div>
+    `).join('');
+    updateTotal();
+  }
+
+  function renderLunas() {
+    const list = document.getElementById('iuran-list');
+    list.innerHTML = iuranLunas.map(item => `
+      <div class="iuran-item" style="cursor:default;">
+        <div class="cb-wrap" style="background:var(--green-pale);border-color:var(--green-pale);">
+          <i class="ti ti-check" style="color:var(--green-mid);"></i>
+        </div>
+        <div class="flex-grow-1">
+          <p class="iuran-name mb-0" style="color:var(--text-sub);font-weight:500;">${item.nama}</p>
+          <p class="iuran-nominal mb-0">${fmt(item.nominal)}</p>
+        </div>
+        <span style="font-size:.72rem;background:var(--green-light);color:var(--green-mid);
+          font-weight:600;padding:2px 9px;border-radius:20px;">Lunas</span>
+      </div>
+    `).join('');
+  }
+
+  function toggle(id) {
+    const item = iuranBelum.find(i => i.id === id);
+    if (!item) return;
+    item.checked = !item.checked;
+    renderBelum();
+  }
+
+  function updateTotal() {
+    const total = iuranBelum.filter(i => i.checked).reduce((s, i) => s + i.nominal, 0);
+    document.getElementById('total-val').textContent = fmt(total);
+    const btn = document.getElementById('btn-bayar');
+    btn.disabled = total === 0;
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-belum').classList.toggle('active', tab === 'belum');
+    document.getElementById('tab-lunas').classList.toggle('active', tab === 'lunas');
+    document.getElementById('pay-footer').style.display = tab === 'belum' ? 'flex' : 'none';
+    tab === 'belum' ? renderBelum() : renderLunas();
+  }
+
+  function handleBayar() {
+    const selected = iuranBelum.filter(i => i.checked);
+    const total = selected.reduce((s, i) => s + i.nominal, 0);
+    // redirect to /checkout.html
+    window.location.href = '/checkout.html';
+  }
+
+  // init
+  renderBelum();
+</script>
+</body>
+</html>
