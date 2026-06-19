@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anaonline — Akun</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --green-dark: #1b5e2e;
+      --green-mid: #2d7a3e;
+      --green-light: #eaf6ed;
+      --green-pale: #d4edda;
+      --yellow: #f5c842;
+      --yellow-dark: #6b4c00;
+      --text-main: #1a1a1a;
+      --text-sub: #6b7280;
+      --border: #e4e7e2;
+      --bg: #f4f7f2;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--green-dark);
+      padding: 1.25rem 1.25rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(44px);
+      pointer-events: none;
+    }
+
+    .glow-1 {
+      width: 180px;
+      height: 180px;
+      background: rgba(120, 210, 100, .28);
+      top: -60px;
+      right: -40px;
+    }
+
+    .glow-2 {
+      width: 120px;
+      height: 120px;
+      background: rgba(245, 200, 66, .2);
+      top: 10px;
+      right: 60px;
+    }
+
+    .glow-3 {
+      width: 100px;
+      height: 100px;
+      background: rgba(60, 180, 110, .18);
+      bottom: -20px;
+      left: 10px;
+    }
+
+    .header-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .page-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      flex: 1;
+      text-align: center;
+    }
+
+    /* ── Content ── */
+    .content-area {
+      padding: 1rem 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+
+    /* ── Profile card ── */
+    .profile-card {
+      background: #fff;
+      border-radius: 16px;
+      border: .5px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+    }
+
+    .avatar-ring {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2.5px solid var(--green-pale);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green-mid);
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .profile-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .profile-nreg {
+      font-size: .78rem;
+      color: var(--text-sub);
+    }
+
+    .profile-card .edit-btn {
+      margin-left: auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--green-light);
+      border: none;
+      color: var(--green-mid);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .profile-card .edit-btn:hover {
+      background: var(--green-pale);
+    }
+
+    /* ── Menu group ── */
+    .menu-group {
+      background: #fff;
+      border-radius: 16px;
+      border: .5px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+      overflow: hidden;
+    }
+
+    .group-label {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      padding: .7rem 1rem .4rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .group-label .ver-badge {
+      font-size: .65rem;
+      color: var(--text-sub);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ── Menu item ── */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      padding: .8rem 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: background .15s;
+      position: relative;
+    }
+
+    .menu-item:hover {
+      background: var(--bg);
+    }
+
+    .menu-item+.menu-item {
+      border-top: 1px solid var(--border);
+    }
+
+    .menu-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    /* icon colour variants */
+    .ico-green {
+      background: var(--green-light);
+      color: var(--green-mid);
+    }
+
+    .ico-blue {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .ico-purple {
+      background: #f3e8ff;
+      color: #7c3aed;
+    }
+
+    .ico-orange {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .ico-gray {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .ico-red {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .menu-label {
+      font-size: .88rem;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .menu-arrow {
+      color: var(--text-sub);
+      font-size: .95rem;
+    }
+
+    /* badge on menu item */
+    .menu-badge {
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      margin-left: auto;
+      margin-right: .35rem;
+    }
+
+    .badge-new {
+      background: var(--yellow);
+      color: var(--yellow-dark);
+    }
+
+    /* ── Danger item (Keluar) ── */
+    .menu-item.danger {
+      color: var(--red);
+    }
+
+    .menu-item.danger .menu-label {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .menu-item.danger:hover {
+      background: var(--red-light);
+    }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: .55rem 0 .75rem;
+      z-index: 100;
+      box-shadow: 0 -2px 16px rgba(0, 0, 0, .06);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-decoration: none;
+      color: var(--text-sub);
+      font-size: .65rem;
+    }
+
+    .nav-item i {
+      font-size: 1.35rem;
+    }
+
+    .nav-item.active {
+      color: var(--green-mid);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--green-mid);
+      margin-top: 1px;
+    }
+
+    /* desktop frame */
+    @media (min-width: 480px) {
+      body {
+        background: #e8ede6;
+      }
+
+      .app-shell {
+        margin: 2rem auto;
+        border-radius: 36px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+        min-height: 820px;
+      }
+
+      .bottom-nav {
+        border-radius: 0 0 36px 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- ── HEADER ── -->
+    <header class="app-header">
+      <div class="glow glow-1"></div>
+      <div class="glow glow-2"></div>
+      <div class="glow glow-3"></div>
+      <div class="header-inner">
+        <h1 class="page-title mb-0">Akun</h1>
+      </div>
+    </header>
+
+    <!-- ── CONTENT ── -->
+    <main class="content-area">
+
+      <!-- Profile -->
+      <div class="profile-card">
+        <div class="avatar-ring">TH</div>
+        <div>
+          <p class="profile-name mb-0">Toni Haryanto</p>
+          <p class="profile-nreg mb-0">17.5383</p>
+        </div>
+        <button class="edit-btn" aria-label="Edit profil" onclick="nav('Edit Profil')">
+          <i class="ti ti-pencil"></i>
+        </button>
+      </div>
+
+      <!-- Pengaturan Akun -->
+      <div class="menu-group">
+        <div class="group-label">Pengaturan Akun</div>
+
+        <a class="menu-item" onclick="nav('Edit Profil')">
+          <div class="menu-icon ico-green"><i class="ti ti-pencil"></i></div>
+          <span class="menu-label">Edit Profil</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Edit Akun')">
+          <div class="menu-icon ico-blue"><i class="ti ti-id-badge"></i></div>
+          <span class="menu-label">Edit Akun</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Notifikasi')">
+          <div class="menu-icon ico-orange"><i class="ti ti-bell"></i></div>
+          <span class="menu-label">Notifikasi</span>
+          <span class="menu-badge badge-new">3 Baru</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+      </div>
+
+      <!-- Administrasi -->
+      <div class="menu-group">
+        <div class="group-label">Administrasi</div>
+
+        <a class="menu-item" onclick="nav('Halaman Administrasi')">
+          <div class="menu-icon ico-blue"><i class="ti ti-layout-dashboard"></i></div>
+          <span class="menu-label">Buka Halaman Administrasi</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Taawun Muktamar')">
+          <div class="menu-icon ico-purple"><i class="ti ti-rosette"></i></div>
+          <span class="menu-label">Taawun Muktamar</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+      </div>
+
+      <!-- Aplikasi -->
+      <div class="menu-group">
+        <div class="group-label">
+          Aplikasi Masagi
+          <span class="ver-badge">v1.0.0</span>
+        </div>
+
+        <a class="menu-item" onclick="nav('Tentang Aplikasi')">
+          <div class="menu-icon ico-gray"><i class="ti ti-info-circle"></i></div>
+          <span class="menu-label">Tentang Aplikasi</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Kontak Kami')">
+          <div class="menu-icon ico-green"><i class="ti ti-phone-call"></i></div>
+          <span class="menu-label">Kontak Kami</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Syarat dan Ketentuan')">
+          <div class="menu-icon ico-gray"><i class="ti ti-file-text"></i></div>
+          <span class="menu-label">Syarat dan Ketentuan</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="nav('Kebijakan Privasi')">
+          <div class="menu-icon ico-gray"><i class="ti ti-shield-check"></i></div>
+          <span class="menu-label">Kebijakan Privasi</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+
+        <a class="menu-item" onclick="confirmTutup()">
+          <div class="menu-icon ico-red"><i class="ti ti-user-x"></i></div>
+          <span class="menu-label">Tutup Akun</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+      </div>
+
+      <!-- Keluar -->
+      <div class="menu-group">
+        <a class="menu-item danger" onclick="confirmKeluar()">
+          <div class="menu-icon ico-red"><i class="ti ti-lock-open"></i></div>
+          <span class="menu-label">Keluar</span>
+          <i class="ti ti-chevron-right menu-arrow"></i>
+        </a>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── BOTTOM NAV ── -->
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="index.html" class="nav-item">
+      <i class="ti ti-home"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="kabar.html" class="nav-item">
+      <i class="ti ti-news"></i>
+      <span>Kabar</span>
+    </a>
+    <a href="iuran.html" class="nav-item">
+      <i class="ti ti-wallet"></i>
+      <span>Iuran</span>
+    </a>
+    <a href="akun.html" class="nav-item active" aria-current="page">
+      <i class="ti ti-user-circle"></i>
+      <span>Akun</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function nav(page) {
+      alert(`Membuka: ${page}`);
+    }
+
+    function confirmKeluar() {
+      if (confirm('Apakah kamu yakin ingin keluar dari akun ini?')) {
+        alert('Berhasil keluar. Sampai jumpa, Toni!');
+      }
+    }
+
+    function confirmTutup() {
+      if (confirm('⚠️ Tutup akun bersifat permanen.\nSeluruh data kamu akan dihapus.\n\nLanjutkan?')) {
+        alert('Permintaan penutupan akun telah dikirim.');
+      }
+    }
+  </script>
+</body>
+
+</html>
